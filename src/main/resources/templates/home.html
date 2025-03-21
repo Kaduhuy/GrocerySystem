@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Grocery List</title>
+</head>
+<body>
+<h1>Grocery List</h1>
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Quantity</th>
+    </tr>
+    </thead>
+    <tbody>
+    <!-- Iterate over the 'groceries' attribute passed from the controller -->
+    <tr th:each="item : ${groceries}">
+        <td th:text="${item.id}">ID</td>
+        <td th:text="${item.name}">Name</td>
+        <td th:text="${item.quantity}">Quantity</td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>
