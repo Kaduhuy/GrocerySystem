@@ -1,0 +1,51 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+    color: #333;
+    margin: 0;
+    padding: 0;
+}
+
+h1 {
+    text-align: center;
+    color: #4CAF50;
+}
+
+.content {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr); /* ✅ 5 items per row */
+    gap: 20px;
+    padding: 20px;
+    justify-content: center;
+}
+
+.grocery {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    transition: transform 0.2s;
+    text-align: center;
+}
+
+.grocery:hover {
+    transform: translateY(-5px);
+}
+
+.grocery-image img {
+    width: 100%;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+p {
+    margin: 10px 0;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+span {
+    font-size: 14px;
+}

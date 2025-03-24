@@ -3,23 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <title>Hjem</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
 </head>
 <body>
 <h1>Grocery List</h1>
-<table>
-    <thead>
-    <tr>
-        <th>Name</th>
-        <th>Price</th>
-    </tr>
-    </thead>
-    <tbody>
-    <!-- Iterate over the 'groceries' attribute passed from the controller -->
-    <tr th:each="item : ${groceries}">
-        <td th:text="${item.name}">Name</td>
-        <td th:text="${item.price}">Quantity</td>
-    </tr>
-    </tbody>
-</table>
+<div class="content">
+    <div class="container" th:each="item : ${groceries}">
+        <div class="grocery">
+            <div class="grocery-image">
+                <img th:src="${item.imageUrl}" th:alt="${item.name}" width="60" />
+            </div>
+            <p th:text="${item.name}"></p>
+            <div>
+                <span>Price: </span>
+                <span th:text="${item.price}"></span>
+                <span> kr </span>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 </html>

@@ -9,6 +9,7 @@ public class GroceryItem {
     private String id;
     private String name;
     private int price;
+    private String imageUrl;
 
     public GroceryItem(){}
 
@@ -16,5 +17,9 @@ public class GroceryItem {
         this.id = id;
         this.name = name;
         this.price = price;
+    }
+    public GroceryItem(String id, String name, int price, String imageUrl){
+        this(id, name, price);
+        this.imageUrl = imageUrl;
     }
 }
