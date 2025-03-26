@@ -14,21 +14,23 @@ public class GroceryItem {
     private String name;
     private double price;
     private int quantity;
+    private String unit;
     private String imageUrl;
 
-    @Enumerated(EnumType.STRING)
-    private GroceryCategory category;
+    @ManyToOne
+    @JoinColumn(name = "category_id", nullable = false)
+    private Category category;
 
     public GroceryItem(){}
 
-    public GroceryItem(Long id, String name, double price, int quantity, GroceryCategory category){
+    public GroceryItem(Long id, String name, double price, int quantity, Category category){
         this.id = id;
         this.name = name;
         this.price = price;
         this.quantity = quantity;
         this.category = category;
     }
-    public GroceryItem(Long id, String name, double price, int quantity, GroceryCategory category, String imageUrl){
+    public GroceryItem(Long id, String name, double price, int quantity, Category category, String imageUrl){
         this(id, name, price, quantity, category);
         this.imageUrl = imageUrl;
     }

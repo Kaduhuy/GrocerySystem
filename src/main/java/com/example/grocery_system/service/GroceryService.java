@@ -1,11 +1,11 @@
 package com.example.grocery_system.service;
 
-import com.example.grocery_system.model.GroceryCategory;
+import com.example.grocery_system.model.Category;
 import com.example.grocery_system.model.GroceryItem;
+import com.example.grocery_system.repository.CategoryRepository;
 import com.example.grocery_system.repository.GroceryRepository;
 import com.example.grocery_system.util.PixabayImageSearch;
 import jakarta.annotation.PostConstruct;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -13,54 +13,97 @@ import java.util.*;
 @Service
 public class GroceryService {
 
-    @Autowired
     private final GroceryRepository groceryRepository;
+    private final CategoryRepository categoryRepository;
     private final Random random = new Random();
+    private Map<String, Object[]> possibleGroceries;
 
-    private static final Map<String, Object[]> POSSIBLE_GROCERIES = Map.ofEntries(
-            new AbstractMap.SimpleEntry<>("Apple", new Object[]{5.0, GroceryCategory.FRUITS}),
-            new AbstractMap.SimpleEntry<>("Banana", new Object[]{10.0, GroceryCategory.FRUITS}),
-            new AbstractMap.SimpleEntry<>("Carrot", new Object[]{10.0, GroceryCategory.VEGETABLES}),
-            new AbstractMap.SimpleEntry<>("Donut", new Object[]{13.5, GroceryCategory.BAKERY}),
-            new AbstractMap.SimpleEntry<>("Egg", new Object[]{40.0, GroceryCategory.DAIRY}),
-            new AbstractMap.SimpleEntry<>("Flour", new Object[]{20.0, GroceryCategory.BAKERY}),
-            new AbstractMap.SimpleEntry<>("Grape", new Object[]{30.0, GroceryCategory.FRUITS}),
-            new AbstractMap.SimpleEntry<>("Honey", new Object[]{50.0, GroceryCategory.SNACKS}),
-            new AbstractMap.SimpleEntry<>("Ice Cream", new Object[]{40.0, GroceryCategory.SNACKS}),
-            new AbstractMap.SimpleEntry<>("Juice", new Object[]{30.0, GroceryCategory.SNACKS}),
-            new AbstractMap.SimpleEntry<>("Kale", new Object[]{24.5, GroceryCategory.VEGETABLES}),
-            new AbstractMap.SimpleEntry<>("Lemons", new Object[]{10.5, GroceryCategory.FRUITS}),
-            new AbstractMap.SimpleEntry<>("Milk", new Object[]{28.0, GroceryCategory.DAIRY}),
-            new AbstractMap.SimpleEntry<>("Nuts", new Object[]{40.0, GroceryCategory.SNACKS}),
-            new AbstractMap.SimpleEntry<>("Onions", new Object[]{10.0, GroceryCategory.VEGETABLES}),
-            new AbstractMap.SimpleEntry<>("Potatoes", new Object[]{20.0, GroceryCategory.VEGETABLES}),
-            new AbstractMap.SimpleEntry<>("Quinoa", new Object[]{40.5, GroceryCategory.SNACKS}),
-            new AbstractMap.SimpleEntry<>("Rice", new Object[]{30.0, GroceryCategory.SNACKS}),
-            new AbstractMap.SimpleEntry<>("Spinach", new Object[]{20.0, GroceryCategory.VEGETABLES}),
-            new AbstractMap.SimpleEntry<>("Tomatoes", new Object[]{20.5, GroceryCategory.VEGETABLES}),
-            new AbstractMap.SimpleEntry<>("Ube", new Object[]{30.0, GroceryCategory.VEGETABLES}),
-            new AbstractMap.SimpleEntry<>("Vanilla", new Object[]{40.0, GroceryCategory.BAKERY}),
-            new AbstractMap.SimpleEntry<>("Watermelon", new Object[]{60.0, GroceryCategory.FRUITS}),
-            new AbstractMap.SimpleEntry<>("Xanthan Gum", new Object[]{50.5, GroceryCategory.SNACKS}),
-            new AbstractMap.SimpleEntry<>("Yogurt", new Object[]{20.5, GroceryCategory.DAIRY}),
-            new AbstractMap.SimpleEntry<>("Zucchini", new Object[]{20.0, GroceryCategory.VEGETABLES})
-    );
-
-    public GroceryService(GroceryRepository groceryRepository) {
+    public GroceryService(GroceryRepository groceryRepository, CategoryRepository categoryRepository) {
         this.groceryRepository = groceryRepository;
+        this.categoryRepository = categoryRepository;
     }
 
-    @PostConstruct
-    public void loadFakeData() {
+    public void seedGroceryItems() {
         try {
+            possibleGroceries = generatePossibleGroceries();
             for (int i = 0; i < 25; i++) {
                 GroceryItem randomItem = createRandomGroceryItem();
                 addGroceryItem(randomItem);
             }
-            System.out.println("Fake data loaded successfully");
+            System.out.println("Grocery items seeded successfully");
         } catch (Exception e) {
-            System.err.println("Failed to load fake data: " + e.getMessage());
-            e.printStackTrace();
+            System.err.println("Failed to seed grocery items: " + e.getMessage());
+        }
+    }
+
+    private Map<String, Object[]> generatePossibleGroceries() {
+        Map<String, Object[]> groceries = new LinkedHashMap<>();
+
+        Category fruits = categoryRepository.findByName("FRUITS").orElseThrow();
+        Category vegetables = categoryRepository.findByName("VEGETABLES").orElseThrow();
+        Category dairy = categoryRepository.findByName("DAIRY").orElseThrow();
+        Category bakery = categoryRepository.findByName("BAKERY").orElseThrow();
+        Category snacks = categoryRepository.findByName("SNACKS").orElseThrow();
+
+        groceries.put("Apple", new Object[]{5.0, fruits});
+        groceries.put("Banana", new Object[]{10.0, fruits});
+        groceries.put("Carrot", new Object[]{10.0, vegetables});
+        groceries.put("Donut", new Object[]{13.5, bakery});
+        groceries.put("Egg", new Object[]{40.0, dairy});
+        groceries.put("Flour", new Object[]{20.0, bakery});
+        groceries.put("Grape", new Object[]{30.0, fruits});
+        groceries.put("Honey", new Object[]{50.0, snacks});
+        groceries.put("Ice Cream", new Object[]{40.0, snacks});
+        groceries.put("Juice", new Object[]{30.0, snacks});
+        groceries.put("Kale", new Object[]{24.5, vegetables});
+        groceries.put("Lemons", new Object[]{10.5, fruits});
+        groceries.put("Milk", new Object[]{28.0, dairy});
+        groceries.put("Nuts", new Object[]{40.0, snacks});
+        groceries.put("Onions", new Object[]{10.0, vegetables});
+        groceries.put("Potatoes", new Object[]{20.0, vegetables});
+        groceries.put("Quinoa", new Object[]{40.5, snacks});
+        groceries.put("Rice", new Object[]{30.0, snacks});
+        groceries.put("Spinach", new Object[]{20.0, vegetables});
+        groceries.put("Tomatoes", new Object[]{20.5, vegetables});
+        groceries.put("Ube", new Object[]{30.0, vegetables});
+        groceries.put("Vanilla", new Object[]{40.0, bakery});
+        groceries.put("Watermelon", new Object[]{60.0, fruits});
+        groceries.put("Xanthan Gum", new Object[]{50.5, snacks});
+        groceries.put("Yogurt", new Object[]{20.5, dairy});
+        groceries.put("Zucchini", new Object[]{20.0, vegetables});
+
+        return groceries;
+    }
+
+    public GroceryItem createRandomGroceryItem() {
+        String name = generateUniqueName();
+
+        Object[] groceryData = possibleGroceries.get(name);
+        double price = (double) groceryData[0];
+        Category category = (Category) groceryData[1];
+        int quantity = 1 + random.nextInt(20);
+        String imageUrl = generateImageUrl(name);
+
+        return new GroceryItem(null, name, price, quantity, category, imageUrl);
+    }
+
+    private String generateUniqueName() {
+        for (String name : possibleGroceries.keySet()) {
+            boolean exists = groceryRepository.findByName(name) != null;
+            if (!exists) {
+                return name;
+            }
+        }
+        List<String> availableNames = new ArrayList<>(possibleGroceries.keySet());
+        return availableNames.get(random.nextInt(availableNames.size())) + "_" + random.nextInt(10000);
+    }
+
+    private String generateImageUrl(String groceryName) {
+        try {
+            return PixabayImageSearch.getPixabayImageUrl(groceryName);
+        } catch (Exception e) {
+            System.err.println("Failed to get Pixabay Image for " + groceryName + ": " + Arrays.toString(e.getStackTrace()));
+            return null;
         }
     }
 
@@ -73,7 +116,7 @@ public class GroceryService {
                 .orElseThrow(() -> new RuntimeException("Grocery item not found with ID: " + id));
     }
 
-    public List<GroceryItem> getItemsByCategory(GroceryCategory category) {
+    public List<GroceryItem> getItemsByCategory(Category category) {
         return groceryRepository.findByCategory(category);
     }
 
@@ -96,57 +139,4 @@ public class GroceryService {
         }
         return false;
     }
-
-    public GroceryItem createRandomGroceryItem() {
-        String name = generateUniqueName();
-
-        Object[] groceryData = POSSIBLE_GROCERIES.get(name);
-        double price = (double) groceryData[0];
-        GroceryCategory category = (GroceryCategory) groceryData[1];
-        int quantity = 1 + random.nextInt(20);
-
-        String imageUrl = generateImageUrl(name);
-
-        // Hibernate will auto-generate the ID
-        return new GroceryItem(
-                null,
-                name,
-                price,
-                quantity,
-                category,
-                imageUrl
-        );
-    }
-
-    /**
-     * @return unique name from grocery list
-     * */
-    private String generateUniqueName() {
-        for (String name : POSSIBLE_GROCERIES.keySet()) {
-            boolean exists = groceryRepository.findByName(name) != null;
-            if (!exists) {
-                return name;
-            }
-        }
-
-        // if no unique name is available, generate a random one
-        List<String> availableNames = new ArrayList<>(POSSIBLE_GROCERIES.keySet());
-        return availableNames.get(random.nextInt(availableNames.size())) + "_" + random.nextInt(10000);
-    }
-
-    /**
-     * @param groceryName The name of the grocery item
-     * @return URL image of the item
-     * */
-
-    private String generateImageUrl(String groceryName) {
-        try {
-            return PixabayImageSearch.getPixabayImageUrl(groceryName);
-        } catch (Exception e) {
-            System.err.println("Failed to get Pixabay Image for " + groceryName + ": " +
-                    Arrays.toString(e.getStackTrace()));
-            return null;
-        }
-    }
-
 }

@@ -19,6 +19,12 @@
                 <span th:text="${item.price}"></span>
                 <span> kr </span>
             </div>
+            <div>
+                <span>Quantity: </span>
+                <span th:text="${item.quantity}"></span>
+                <span> stk </span>
+            </div>
+            <p th:text="${item.category.name}"></p>
         </div>
     </div>
 </div>

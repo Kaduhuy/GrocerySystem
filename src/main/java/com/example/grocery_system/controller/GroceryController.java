@@ -1,11 +1,13 @@
 package com.example.grocery_system.controller;
 
-import com.example.grocery_system.model.GroceryCategory;
+import com.example.grocery_system.model.Category;
 import com.example.grocery_system.model.GroceryItem;
+import com.example.grocery_system.repository.CategoryRepository;
 import com.example.grocery_system.service.GroceryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,9 +18,11 @@ public class GroceryController {
 
     @Autowired
     private final GroceryService groceryService;
+    private final CategoryRepository categoryRepository;
 
-    public GroceryController(GroceryService groceryService){
+    public GroceryController(GroceryService groceryService, CategoryRepository categoryRepository){
         this.groceryService = groceryService;
+        this.categoryRepository = categoryRepository;
     }
 
     @GetMapping
@@ -28,6 +32,13 @@ public class GroceryController {
             return ResponseEntity.noContent().build(); // 204 No Content if list is empty
         }
         return ResponseEntity.ok(items);
+    }
+
+    @GetMapping("/add")
+    public String showAddGroceryForm(Model model) {
+        model.addAttribute("groceryItem", new GroceryItem());
+        model.addAttribute("categories", categoryRepository.findAll());
+        return "add-grocery";
     }
 
     @GetMapping("/{id}")
@@ -51,7 +62,7 @@ public class GroceryController {
     }
 
     @GetMapping("/category/{category}")
-    public ResponseEntity<List<GroceryItem>> getItemsByCategory(@PathVariable GroceryCategory category) {
+    public ResponseEntity<List<GroceryItem>> getItemsByCategory(@PathVariable Category category) {
         List<GroceryItem> items = groceryService.getItemsByCategory(category);
         if (items.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // 404 Not Found if no items in category
@@ -75,7 +86,7 @@ public class GroceryController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteGroceryItem(@PathVariable String id) {
+    public ResponseEntity<?> deleteGroceryItem(@PathVariable String id) {
         boolean deleted = groceryService.deleteGroceryItem(id);
         if (deleted) {
             return ResponseEntity.noContent().build(); // 204 No Content
