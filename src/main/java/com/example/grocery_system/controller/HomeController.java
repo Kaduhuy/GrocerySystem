@@ -7,6 +7,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Controller
 public class HomeController {
     private final GroceryService groceryService;
@@ -17,8 +19,12 @@ public class HomeController {
         this.categoryRepository = categoryRepository;
     }
     @GetMapping("/home")
-    public String home(Model model){
-        model.addAttribute("groceries", groceryService.getAllGroceryItems());
+    public String home(@RequestParam(value = "keyword", required = false) String keyword, Model model) {
+        if (keyword != null && !keyword.isEmpty()) {
+            model.addAttribute("groceries", groceryService.searchGroceries(keyword));
+        } else {
+            model.addAttribute("groceries", groceryService.getAllGroceryItems());
+        }
         return "home";
     }
 

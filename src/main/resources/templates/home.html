@@ -9,6 +9,17 @@
 <div th:replace="~{fragments/navbar :: navbar}"></div>
 
 <h1>Grocery List</h1>
+<!--Search bar-->
+<div class="search-section">
+    <form th:action="@{/home}" method="get">
+        <input type="text" name="keyword" placeholder="Search groceries..." th:value="${keyword}" />
+        <div class="button-group">
+            <button type="submit" class="search-button">Search</button>
+            <a th:href="@{/home}" class="clear-button">Clear</a>
+        </div>
+    </form>
+</div>
+<!--Grocery list-->
 <div class="content">
     <div class="container" th:each="item : ${groceries}">
         <div class="grocery">

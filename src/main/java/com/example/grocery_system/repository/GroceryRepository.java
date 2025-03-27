@@ -13,4 +13,6 @@ public interface GroceryRepository extends JpaRepository<GroceryItem, String> {
     List<GroceryItem> findByCategory(Category category);
 
     GroceryItem findByName(String name);
+
+    List<GroceryItem> findByNameContainingIgnoreCase(String keyword);
 }

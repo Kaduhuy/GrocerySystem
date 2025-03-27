@@ -150,4 +150,8 @@ public class GroceryService {
         }
         return false;
     }
+
+    public List<GroceryItem> searchGroceries(String keyword) {
+        return groceryRepository.findByNameContainingIgnoreCase(keyword);
+    }
 }
