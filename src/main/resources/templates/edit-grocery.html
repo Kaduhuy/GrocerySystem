@@ -2,15 +2,15 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Add Grocery</title>
+    <title>Edit Grocery</title>
     <link rel="stylesheet" th:href="@{/css/style.css}" />
 </head>
 <body>
 <div th:replace="~{fragments/navbar :: navbar}"></div>
 
-<h1>Add Grocery</h1>
+<h1>Edit Grocery</h1>
 
-<form th:action="@{/groceries/add}" method="post" th:object="${groceryItem}">
+<form th:action="@{|/groceries/${groceryItem.id}/edit|}" method="post" th:object="${groceryItem}">
     <table>
         <tr>
             <td><label for="name">Name:</label></td>
@@ -28,16 +28,13 @@
             <td><label for="category">Category:</label></td>
             <td>
                 <select th:field="*{category.id}" id="category">
-                    <option th:each="cat : ${categories}"
-                            th:value="${cat.id}"
-                            th:text="${cat.name}">
-                    </option>
+                    <option th:each="cat : ${categories}" th:value="${cat.id}" th:text="${cat.name}"></option>
                 </select>
             </td>
         </tr>
         <tr>
-            <td>
-                <button type="submit">Add Grocery</button>
+            <td colspan="2">
+                <button type="submit">Update</button>
             </td>
         </tr>
     </table>

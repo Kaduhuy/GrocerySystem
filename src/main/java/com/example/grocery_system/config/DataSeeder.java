@@ -1,7 +1,6 @@
 package com.example.grocery_system.config;
 
 import com.example.grocery_system.model.Category;
-import com.example.grocery_system.model.GroceryItem;
 import com.example.grocery_system.repository.CategoryRepository;
 import com.example.grocery_system.service.GroceryService;
 import org.springframework.boot.CommandLineRunner;

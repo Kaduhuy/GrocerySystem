@@ -6,6 +6,8 @@
     <link rel="stylesheet" th:href="@{/css/style.css}" />
 </head>
 <body>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
 <h1>Grocery List</h1>
 <div class="content">
     <div class="container" th:each="item : ${groceries}">
@@ -25,6 +27,11 @@
                 <span> stk </span>
             </div>
             <p th:text="${item.category.name}"></p>
+            <a th:href="@{|/groceries/${item.id}/edit|}" class="edit-button">Edit</a>
+            <form th:action="@{'/groceries/' + ${item.id}}" method="post">
+                <input type="hidden" name="_method" value="delete" />
+                <button type="submit" class="delete-button">Delete</button>
+            </form>
         </div>
     </div>
 </div>

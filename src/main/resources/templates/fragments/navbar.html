@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+</head>
+<body>
+<div th:fragment="navbar">
+    <nav style="background-color: #f8f9fa; padding: 1rem; display: flex; gap: 1rem;">
+        <a th:href="@{/home}">Home</a>
+        <a th:href="@{/groceries/add}">Add Grocery</a>
+    </nav>
+    <hr />
+</div>
+</body>
+</html>

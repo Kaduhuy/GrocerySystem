@@ -25,8 +25,13 @@ public class GroceryService {
 
     public void seedGroceryItems() {
         try {
+            if (groceryRepository.count() > 0) {
+                System.out.println("Grocery items already exist — skipping seed.");
+                return;
+            }
+
             possibleGroceries = generatePossibleGroceries();
-            for (int i = 0; i < 25; i++) {
+            for (int i = 0; i < possibleGroceries.size(); i++) {
                 GroceryItem randomItem = createRandomGroceryItem();
                 addGroceryItem(randomItem);
             }
@@ -121,20 +126,26 @@ public class GroceryService {
     }
 
     public GroceryItem addGroceryItem(GroceryItem item) {
+        if (item.getImageUrl() == null || item.getImageUrl().isBlank()) {
+            item.setImageUrl(generateImageUrl(item.getName()));
+        }
         return groceryRepository.save(item);
     }
 
     public GroceryItem updateGroceryItem(Long id, GroceryItem updatedItem) {
         if (groceryRepository.existsById(id.toString())) {
             updatedItem.setId(id);
+            if (updatedItem.getImageUrl() == null || updatedItem.getImageUrl().isBlank()) {
+                updatedItem.setImageUrl(generateImageUrl(updatedItem.getName()));
+            }
             return groceryRepository.save(updatedItem);
         }
         return null;
     }
 
-    public boolean deleteGroceryItem(String id) {
-        if (groceryRepository.existsById(id)) {
-            groceryRepository.deleteById(id);
+    public boolean deleteGroceryItem(Long id) {
+        if (groceryRepository.existsById(id.toString())) {
+            groceryRepository.deleteById(id.toString());
             return true;
         }
         return false;

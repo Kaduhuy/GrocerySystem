@@ -18,11 +18,9 @@ public class GroceryController {
 
     @Autowired
     private final GroceryService groceryService;
-    private final CategoryRepository categoryRepository;
 
-    public GroceryController(GroceryService groceryService, CategoryRepository categoryRepository){
+    public GroceryController(GroceryService groceryService){
         this.groceryService = groceryService;
-        this.categoryRepository = categoryRepository;
     }
 
     @GetMapping
@@ -32,13 +30,6 @@ public class GroceryController {
             return ResponseEntity.noContent().build(); // 204 No Content if list is empty
         }
         return ResponseEntity.ok(items);
-    }
-
-    @GetMapping("/add")
-    public String showAddGroceryForm(Model model) {
-        model.addAttribute("groceryItem", new GroceryItem());
-        model.addAttribute("categories", categoryRepository.findAll());
-        return "add-grocery";
     }
 
     @GetMapping("/{id}")
@@ -52,13 +43,17 @@ public class GroceryController {
         }
     }
 
-    @PostMapping
-    public ResponseEntity<GroceryItem> addGroceryItem(@RequestBody GroceryItem newGroceryItem) {
-        if (newGroceryItem.getName() == null || newGroceryItem.getPrice() <= 0) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build(); // 400 Bad Request
+    @PostMapping("/add")
+    public ResponseEntity<?> addGroceryItem(@RequestBody GroceryItem newGroceryItem) {
+        if (newGroceryItem.getName() == null || newGroceryItem.getName().isBlank()) {
+            return ResponseEntity.badRequest().body("Name is required.");
         }
+        if (newGroceryItem.getPrice() <= 0) {
+            return ResponseEntity.badRequest().body("Price must be greater than 0.");
+        }
+
         GroceryItem createdGroceryItem = groceryService.addGroceryItem(newGroceryItem);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdGroceryItem); // 201 Created
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdGroceryItem);
     }
 
     @GetMapping("/category/{category}")
@@ -86,11 +81,9 @@ public class GroceryController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteGroceryItem(@PathVariable String id) {
+    public ResponseEntity<?> deleteGroceryItem(@PathVariable Long id) {
         boolean deleted = groceryService.deleteGroceryItem(id);
-        if (deleted) {
-            return ResponseEntity.noContent().build(); // 204 No Content
-        }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // 404 Not Found
+        return deleted ? ResponseEntity.noContent().build()
+                : ResponseEntity.notFound().build();
     }
 }
